@@ -110,5 +110,7 @@ public class ViewContent extends Activity {
 		
 		
 		tv.setText("IDX = " + idx + "\r\n"+memo);
+		
+		tv.setMovementMethod(new ScrollingMovementMethod());  // 스크롤 기능 추가
 	}
 }

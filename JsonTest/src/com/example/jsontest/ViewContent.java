@@ -28,13 +28,28 @@ import android.widget.Toast;
 
 public class ViewContent extends Activity {
 	TextView tv;
-	Button bt ;
+	Button bt , bt2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_content);
 		
 		bt = (Button)findViewById(R.id.button1);
+		bt2 = (Button)findViewById(R.id.button2);
+		
+		OnClickListener ol2 = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//getActionBar().setDisplayHomeAsUpEnabled(true);
+				finish();	
+				
+			}
+		};
+		
+		bt2.setOnClickListener(ol2);
+		
 		
 		OnClickListener ol = new OnClickListener() {
 			
@@ -112,5 +127,24 @@ public class ViewContent extends Activity {
 		tv.setText("IDX = " + idx + "\r\n"+memo);
 		
 		tv.setMovementMethod(new ScrollingMovementMethod());  // 스크롤 기능 추가
+		
+		
 	}
+	
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
+		switch (item.getItemId()) {
+
+			case android.R.id.home:
+
+				// NavUtils.navigateUpFromSameTask(this); 
+
+				finish();
+
+				return true;
+
+		}
+
+		return super.onOptionsItemSelected(item);
+	}; 
+
 }

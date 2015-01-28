@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import BackPressCloseHandler.BackPressCloseHandler;
@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	Button bn , bn2 , bn3;
+	Button bn , bn2 , bn3 , bn4;
 	EditText Et;
 	TextView Tv;
 	private BackPressCloseHandler backpress;
@@ -43,13 +43,80 @@ public class MainActivity extends Activity {
 		bn = (Button)findViewById(R.id.button1);
 		bn2 = (Button)findViewById(R.id.button2);
 		bn3 = (Button)findViewById(R.id.button3);
+		bn4 = (Button)findViewById(R.id.button4);
+		
 		Et = (EditText)findViewById(R.id.editText1);
 		
 		
 		Tv = (TextView)findViewById(R.id.textView1);
 		
+		OnClickListener ol4 = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		        StrictMode.setThreadPolicy(policy);
+				JSONObject json = new JSONObject();
+				try {
+					json.put("idx", Et.getText());
+					HttpClient httpclient =  new DefaultHttpClient();
+					HttpPost httpPost = new HttpPost("http://yoshikix.meximas.com/admin/card/json/getCardInfo.php"); 
+					
+					StringEntity se = new StringEntity(json.toString(),"UTF-8");
+					httpPost.setEntity(se);
+					httpPost.setHeader("Accept", "application/json;");
+				    httpPost.setHeader("Content-type", "application/json;");
+				    httpPost.setHeader("Accept-Charset", "UTF-8");
+				    
+				    
+				    HttpResponse httpResponse = httpclient.execute(httpPost);
+				    
+				    Toast.makeText(getBaseContext(), Et.getText(), Toast.LENGTH_SHORT).show();
+				    
+				    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(),"UTF-8"));
+				    String line = "";
+				    String page="";
+				    
+				    while((line = bufferedReader.readLine())!=null){
+				    	page+=line;
+				    }
+				    
+				    
+				    if(page!=null){
+					    JSONObject returnJson = new JSONObject(page);
+					    
+					    String card_name = String.valueOf(returnJson.getString("card_name"));
+					    
+					    
+					    
+	//				    Toast.makeText(getBaseContext(), arr1.toString(), Toast.LENGTH_SHORT).show();
+	
+					    Intent intent = new Intent(MainActivity.this, ViewContent.class);
+					    intent.putExtra("MEMO", card_name);
+					    
+		                startActivity(intent);
+				    }else{
+				    	Toast.makeText(getBaseContext(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+				    }
+				    
+				    
+				    
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				
+			}
+		};
+		bn4.setOnClickListener(ol4);
+		
+		
 		OnClickListener ol3 = new OnClickListener() {
 			
+			@SuppressWarnings("unused")
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -83,26 +150,34 @@ public class MainActivity extends Activity {
 				    while((line = bufferedReader.readLine())!=null){
 				    	page+=line;
 				    }
-				    Tv.setText(page);
 				    
-				    JSONObject returnJson = new JSONObject(page);
+				    //Toast.makeText(getBaseContext(), page, Toast.LENGTH_SHORT).show();
 				    
-				    JSONArray arr1 = returnJson.getJSONArray("IDX");
-				    JSONArray arr2 = returnJson.getJSONArray("SUBJECT");
-				    JSONArray arr3 = returnJson.getJSONArray("MEMO");
-				    
-				    
-//				    Toast.makeText(getBaseContext(), arr1.toString(), Toast.LENGTH_SHORT).show();
-
-				    Intent intent = new Intent(MainActivity.this, SubActivity.class);
-				    
-				    intent.putExtra("IDX", arr1.toString());
-				    intent.putExtra("SUBJECT", arr2.toString());
-				    intent.putExtra("MEMO", arr3.toString());
-				    
-				    intent.putExtra("CONTENTS", page);
-				    
-	                startActivity(intent);
+				    if(page!=null){
+					    
+					    Tv.setText(page);
+					    
+					    JSONObject returnJson = new JSONObject(page);
+					    
+					    JSONArray arr1 = returnJson.getJSONArray("IDX");
+					    JSONArray arr2 = returnJson.getJSONArray("SUBJECT");
+					    JSONArray arr3 = returnJson.getJSONArray("MEMO");
+					    
+					    
+	//				    Toast.makeText(getBaseContext(), arr1.toString(), Toast.LENGTH_SHORT).show();
+	
+					    Intent intent = new Intent(MainActivity.this, SubActivity.class);
+					    
+					    intent.putExtra("IDX", arr1.toString());
+					    intent.putExtra("SUBJECT", arr2.toString());
+					    intent.putExtra("MEMO", arr3.toString());
+					    
+					    intent.putExtra("CONTENTS", page);
+					    
+		                startActivity(intent);
+				    }else{
+				    	Toast.makeText(getBaseContext(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+				    }
 	                
 					
 				}catch(Exception e){

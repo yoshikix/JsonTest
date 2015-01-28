@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
 		
 		OnClickListener ol4 = new OnClickListener() {
 			
+			@SuppressWarnings("unused")
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
